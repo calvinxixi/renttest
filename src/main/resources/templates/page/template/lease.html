@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>管理</title>
+    <link rel="stylesheet" href="assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="assets/module/admin.css?v=315"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<!-- 页面加载loading -->
+<div class="page-loading">
+    <div class="ball-loader">
+        <span></span><span></span><span></span><span></span>
+    </div>
+</div>
+
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body table-tool-mini full-table">
+            <div class="layui-form toolbar">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label w-auto">租约号：</label>
+                        <div class="layui-input-inline mr0">
+                            <input name="name" class="layui-input" type="text" placeholder="输入租约号"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline" style="padding-right: 110px;">
+                        <button class="layui-btn icon-btn" lay-filter="formSubSearchBook" lay-submit>
+                            <i class="layui-icon">&#xe615;</i>搜索
+                        </button>
+                        <button id="btnAddBook" class="layui-btn icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>
+                    </div>
+                </div>
+            </div>
+
+            <table class="layui-table" id="tableBook" lay-filter="tableBook"></table>
+        </div>
+    </div>
+</div>
+
+<!-- 表格操作列 -->
+<script type="text/html" id="tableBarBook">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<!-- 表单弹窗 -->
+<script type="text/html" id="modelBook">
+    <form id="modelBookForm" lay-filter="modelBookForm" class="layui-form model-form">
+        <input name="id" type="hidden"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">房东名</label>
+            <div class="layui-input-block">
+                <select name="l_oID" lay-verify="required">
+                    <option value="">请选择属于房东</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">房号</label>
+            <div class="layui-input-block">
+                <select name="l_hID" lay-verify="required">
+                    <option value="">请选择属于房号</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">租客号</label>
+            <div class="layui-input-block">
+                <select name="l_tID" lay-verify="required">
+                    <option value="">请选择属于租客</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">签约日期</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="lsign_time" name="lsign_time"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">租约期限</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="llease_time" name="llease_limit"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">押金</label>
+            <div class="layui-input-block">
+                <input name="lcash" placeholder="请输入押金" type="text" class="layui-input" maxlength="20"
+                       lay-verType="tips" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">租金</label>
+            <div class="layui-input-block">
+                <input name="lrent" placeholder="请输入租金" type="text" class="layui-input" maxlength="20"
+                       lay-verType="tips" lay-verify="required" required/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">收租日期</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="lcharge_time" name="lcharge_date"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">水费</label>
+            <div class="layui-input-block">
+                <input name="lwater" placeholder="请输入水费" type="text" class="layui-input" maxlength="20"
+                       lay-verType="tips" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电费</label>
+            <div class="layui-input-block">
+                <input name="leletric" placeholder="请输入电费" type="text" class="layui-input" maxlength="20"
+                       lay-verType="tips" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <input name="lremark" placeholder="请输入备注" type="text" class="layui-input" maxlength="20"
+                       lay-verType="tips" required/>
+            </div>
+        </div>
+        <div class="layui-form-item text-right">
+            <button class="layui-btn layui-btn-primary" type="button" ew-event="closePageDialog">取消</button>
+            <button class="layui-btn" lay-filter="modelSubmitBook" lay-submit>保存</button>
+        </div>
+    </form>
+</script>
+
+
+<!-- js部分 -->
+<script type="text/javascript" src="assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="assets/js/common.js?v=315"></script>
+
+<script type="text/html" id="lease_2">
+    {{d.house.hid}}
+</script>
+
+<script type="text/html" id="lease_3">
+    {{d.own.oname}}
+</script>
+
+<script type="text/html" id="lease_4">
+    {{d.tenant.tname}}
+</script>
+
+<script type="text/html" id="lease_7">
+    {{d.lcash}}元
+</script>
+
+<script type="text/html" id="lease_8">
+    {{d.lrent}}元
+</script>
+<script type="text/html" id="lease_10">
+    {{d.lwater}}元/立方
+</script>
+<script type="text/html" id="lease_11">
+    {{d.leletric}}元/度
+</script>
+
+<script>
+    layui.use(['layer', 'form', 'table', 'util', 'admin', 'tableX'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var util = layui.util;
+        var admin = layui.admin;
+        var tableX = layui.tableX;
+
+        // 渲染表格
+        var insTb = table.render({
+            elem: '#tableBook',
+            url: '/api/getLease',
+            page: true,
+            height: "full-100",
+            toolbar: true,
+            cellMinWidth: 100,
+            cols: [
+                [
+                    {type: 'numbers', title: '#'}
+                    ,{field: 'lid', sort: true,title: '租约号'}
+                    ,{field: 'house', templet: '#lease_2', sort: true, title: '房号'}
+                    ,{field: 'own', templet: '#lease_3', sort: true, title: '房东号'}
+                    ,{field: 'tenant', templet: '#lease_4', sort: true, title: '租客号'}
+                    ,{field: 'lsign_time', sort: true, title: '签约时间'}
+                    ,{field: 'llease_limit', sort: true, title: '租约期限'}
+                    ,{field: 'lcash', sort: true,templet: '#lease_7', title: '押金'}
+                    ,{field: 'lrent', sort: true,templet: '#lease_8', title: '租金'}
+                    ,{field: 'lcharge_date', sort: true, title: '收费日期'}
+                    ,{field: 'lwater', sort: true,templet: '#lease_10', title: '水费'}
+                    ,{field: 'leletric', sort: true,templet: '#lease_11', title: '电费'}
+                    ,{field: 'lremark', sort: true, title: '备注'}
+                    ,{align: 'center', toolbar: '#tableBarBook', title: '操作', minWidth: 200}
+                ]
+            ]
+        });
+
+        // 添加
+        $('#btnAddBook').click(function () {
+            showEditModel();
+        });
+
+        // 搜索
+        form.on('submit(formSubSearchBook)', function (data) {
+            insTb.reload({where: data.field,url:'/api/findLease',page : {curr : 1}}, 'data');
+        });
+
+        // 工具条点击事件
+        table.on('tool(tableBook)', function (obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+            if (layEvent === 'edit') { // 修改
+                showEditModel(data);
+            } else{ // 删除
+                doDel(data.lid,data.l_hID);
+            }
+        });
+
+        // 显示表单弹窗
+        function showEditModel(mBook) {
+            var option = "";
+            if(mBook==null){
+                admin.open({
+                    type: 1,
+                    title: '添加租约',
+                    content: $('#modelBook').html(),
+                    success: function (layero, dIndex) {
+                        //房号，房东号，租客号选择动态增加
+                        $.ajax({
+                            url: '/ajax/getAllOwns',
+                            dataType: 'json',
+                            type: 'get',
+                            async:false,
+                            success: function (res) {
+                                if (res.code == 0){
+                                    for(var i in res.data){
+                                        option += "<option value='"+res.data[i]['oid']+"'>"+res.data[i]['oname']+"</option>";
+                                    }
+                                }
+                                $("[name='l_oID']").append(option);
+                                form.render()
+                            }
+                        })
+                        option = "";
+                        $.ajax({
+                            url: '/ajax/getAllFreehouses',
+                            dataType: 'json',
+                            type: 'get',
+                            async:false,
+                            success: function (res) {
+                                if (res.code == 0){
+                                    for(var i in res.data){
+                                        option += "<option value='"+res.data[i]['hid']+"'>"+res.data[i]['hid']+"</option>";
+                                    }
+                                }
+                                $("[name='l_hID']").append(option);
+                                form.render()
+                            }
+                        })
+                        option = "";
+                        $.ajax({
+                            url: '/ajax/getAllTenants',
+                            dataType: 'json',
+                            type: 'get',
+                            async:false,
+                            success: function (res) {
+                                if (res.code == 0){
+                                    for(var i in res.data){
+                                        option += "<option value='"+res.data[i]['tid']+"'>"+res.data[i]['tname']+"</option>";
+                                    }
+                                }
+                                $("[name='l_tID']").append(option);
+                                form.render()
+                            }
+                        })
+                        option = "";
+                        //日期显示
+                        layui.use('laydate', function() {
+                            var laydate = layui.laydate;
+                            laydate.render({elem: '#lsign_time'});
+                            laydate.render({elem: '#llease_time'});
+                            laydate.render({elem: '#lcharge_time'});
+                        });
+                        //下一张
+                        $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                        var url = 'api/addLease';
+                        // 回显数据
+                        form.val('modelBookForm', mBook);
+                        // 表单提交事件
+                        form.on('submit(modelSubmitBook)', function (data) {
+                            layer.load(2);
+                            $.ajax({
+                                url:url,
+                                type:"POST",
+                                data:JSON.stringify(data.field),
+                                contentType:"application/json; charset=utf-8",
+                                dataType:"json",
+                                success: function(res){
+                                    layer.closeAll('loading');
+                                    if (res.code == 200) {
+                                        layer.close(dIndex);
+                                        layer.msg(res.msg, {icon: 1});
+                                        insTb.reload({}, 'data');
+                                    } else {
+                                        layer.msg(res.msg, {icon: 2});
+                                    }
+                                }
+                            })
+                            return false;
+                        });
+                    }
+                });
+            }else{
+            }
+
+        }
+
+        // 删除
+        function doDel(id,hid) {
+            layer.confirm('确定要删除“' + id + '”吗？', {
+                skin: 'layui-layer-admin',
+                shade: .1
+            }, function (i) {
+                layer.close(i);
+                layer.load(2);
+                $.get('/api/delLease', {
+                    LID: id
+                    ,L_hid:hid
+                }, function (res) {
+                    layer.closeAll('loading');
+                    if (res.code == 200) {
+                        layer.msg(res.msg, {icon: 1});
+                        insTb.reload({}, 'data');
+                    } else {
+                        layer.msg(res.msg, {icon: 2});
+                    }
+                }, 'json');
+            });
+        }
+
+
+    });
+</script>
+
+</body>
+</html>

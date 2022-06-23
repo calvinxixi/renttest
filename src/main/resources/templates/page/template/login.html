@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>房屋管理系统登录页面</title>
+    <link rel="stylesheet" href="assets/libs/layui01/css/layui.css"/>
+</head>
+
+<body style="background-image: url(images/11.jpg);">
+<!-- 顶部菜单 -->
+<ul class="layui-nav layui-anim layui-anim-downbit" lay-filter="">
+    <i class="layui-icon layui-icon-template-1"style="font-size: 40px; color: #ffffff;padding:40px 0;text-align: center;"></i>
+    <li class="layui-nav-item" style="font-size: 40px;font-weight: 800;"><a href=""style="font-size: 40px;font-weight: 800;">登录界面</a></li>
+</ul>
+
+<!-- 登录选项卡 -->
+<div class="login-wrapper" >
+    <div class="login-header">
+
+    </div>
+    <div class="login-body" >
+        <div class="layui-card layui-col-lg-offset4 layui-col-md4 layui-anim layui-anim-upbit">
+            <div class="layui-card-header" style="text-align: center;font-size: 20px;font-style: inherit;">角色登录</div>
+            <div class="layui-card-body">
+                <form class="layui-form" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">选择身份</label>
+                        <div class="layui-input-block">
+                            <select name="man" lay-verify="required" id="userchoice">
+                                <option value=""></option>
+                                <option value="0">房东</option>
+                                <option value="1">租户</option>
+                                <option value="2">管理员</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">账户号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="username" id="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码</label>
+                        <div class="layui-input-inline">
+                            <input type="password" name="password" id="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+<!--                    <div class="layui-form-item">-->
+<!--                        <label class="layui-form-label"><i class="layui-icon layui-icon-vercode"></i></label>-->
+<!--                        <div class="layui-input-block">-->
+<!--                            <div class="layui-row inline-block">-->
+<!--                                <div id="drag"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="login-submit">登录</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+<!-- js部分 -->
+<script type="text/javascript" src="assets/libs/layui01/layui.js"></script>
+<script>
+    // 测试
+    layui.use(['form', 'layer'], function(){
+        var form = layui.form;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        var man = document.getElementById("userchoice");
+        var pass = document.getElementById("password");
+
+        function getSelectVal(){
+            var idx = man.selectedIndex,
+                option,
+                value;
+            if (idx > -1) {
+                option = man.options[idx];
+                value = option.attributes.value;
+                return (value && value.specified) ? option.value : option.text;
+            }
+            return null;
+        }
+        // 表单提交
+        form.on('submit(login-submit)', function(obj){
+                if(getSelectVal() == 2){
+                    //身份
+                    sessionStorage.setItem("userid", 2);
+                    sessionStorage.setItem("userpass", pass.value);
+                    $.ajax({
+                        type: "post",
+                        contentType: "application/json",
+                        url: "/guanli/loginByPassword",
+                        data: JSON.stringify(obj.field),
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.code == '200'){
+                                layer.msg('登录成功',
+                                    {
+                                        icon: 1,
+                                        time: 1500
+                                    }, function () {
+                                        location.replace('/index')
+                                    })
+                            } else {
+                                layer.alert(data.msg, {icon: 2}, function (index) {
+                                    layer.close(index);
+                                });
+                            }
+                        }
+                    })
+                }
+
+            if(getSelectVal() == 0){
+                //身份
+                sessionStorage.setItem("userid", 0);
+                sessionStorage.setItem("userpass", pass.value);
+                $.ajax({
+                    type: "post",
+                    contentType: "application/json",
+                    url: "/own/loginByPassword",
+                    data: JSON.stringify(obj.field),
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == '200'){
+                            layer.msg('登录成功',
+                                {
+                                    icon: 1,
+                                    time: 1500
+                                }, function () {
+                                    location.replace('/index')
+                                })
+                        } else {
+                            layer.alert(data.msg, {icon: 2}, function (index) {
+                                layer.close(index);
+                            });
+                        }
+                    }
+                })
+            }
+
+            if(getSelectVal() == 1){
+                //身份
+                sessionStorage.setItem("userid", 1);
+                sessionStorage.setItem("userpass", pass.value);
+
+                $.ajax({
+                    type: "post",
+                    contentType: "application/json",
+                    url: "/tenant/loginByPassword",
+                    data: JSON.stringify(obj.field),
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == '200'){
+                            layer.msg('登录成功',
+                                {
+                                    icon: 1,
+                                    time: 1500
+                                }, function () {
+                                    location.replace('/index')
+                                })
+                        } else {
+                            layer.alert(data.msg, {icon: 2}, function (index) {
+                                layer.close(index);
+                            });
+                        }
+                    }
+                })
+            }
+
+            return false;
+        });
+    });
+</script>
+
+</body>
+</html>

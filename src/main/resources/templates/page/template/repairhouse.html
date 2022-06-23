@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>管理</title>
+    <link rel="stylesheet" href="assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="assets/module/admin.css?v=315"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<!-- 页面加载loading -->
+<div class="page-loading">
+    <div class="ball-loader">
+        <span></span><span></span><span></span><span></span>
+    </div>
+</div>
+
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body table-tool-mini full-table">
+            <div class="layui-form toolbar">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label w-auto">维修号：</label>
+                        <div class="layui-input-inline mr0">
+                            <input name="name" class="layui-input" type="text" placeholder="输入租约号"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline" style="padding-right: 110px;">
+                        <button class="layui-btn icon-btn" lay-filter="formSubSearchBook" lay-submit>
+                            <i class="layui-icon">&#xe615;</i>搜索
+                        </button>
+                        <button id="btnAddBook" class="layui-btn icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>
+                    </div>
+                </div>
+            </div>
+
+            <table class="layui-table" id="tableBook" lay-filter="tableBook"></table>
+        </div>
+    </div>
+</div>
+
+<!-- 表格操作列 -->
+<script type="text/html" id="tableBarBook">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<!-- 表单弹窗 -->
+<script type="text/html" id="modelBook">
+    <form id="modelBookForm" lay-filter="modelBookForm" class="layui-form model-form">
+        <input name="id" type="hidden"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">维修单号</label>
+            <div class="layui-input-block">
+                <input name="xid" placeholder="请输入租维修单号" type="text" class="layui-input" maxlength="20"
+                       lay-verType="tips" required/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">房号</label>
+            <div class="layui-input-block">
+                <select name="x_hID" lay-verify="required">
+                    <option value="">请选择属于房号</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">发起租客名</label>
+            <div class="layui-input-block">
+                <select name="xsponsor" lay-verify="required">
+                    <option value="">请选择发起租客</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">负责房东名</label>
+            <div class="layui-input-block">
+                <select name="xperson" lay-verify="required">
+                    <option value="">请选择属于负责房东</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">维修类型</label>
+            <div class="layui-input-block">
+                <input name="xtype" placeholder="请输入维修类型" type="text" class="layui-input" maxlength="20"
+                       lay-verType="tips" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">发起时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="xtime" name="xtime"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">维修状态</label>
+            <div class="layui-input-block">
+                <select name="xactive" lay-verify="required">
+                    <option value="">请选择属于状态</option>
+                    <option value="0">未完成</option>
+                    <option value="1">已完成</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">收费</label>
+            <div class="layui-input-block">
+                <input name="xcharge" placeholder="请输入收费金额" type="text" class="layui-input" maxlength="20"
+                       lay-verType="tips" required/>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">结束时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="xfinish" name="xfinish"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">维修说明</label>
+            <div class="layui-input-block">
+                <input name="xcontent" placeholder="请输入维修说明" type="text" class="layui-input" maxlength="20"
+                       lay-verType="tips" required/>
+            </div>
+        </div>
+        <div class="layui-form-item text-right">
+            <button class="layui-btn layui-btn-primary" type="button" ew-event="closePageDialog">取消</button>
+            <button class="layui-btn" lay-filter="modelSubmitBook" lay-submit>保存</button>
+        </div>
+    </form>
+</script>
+
+
+<!-- js部分 -->
+<script type="text/javascript" src="assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="assets/js/common.js?v=315"></script>
+
+<script type="text/html" id="lease_3">
+    {{d.own.oname}}
+</script>
+
+<script type="text/html" id="lease_4">
+    {{d.tenant.tname}}
+</script>
+
+<script type="text/html" id="lease_7">
+    {{d.xcharge}}元
+</script>
+
+<script type="text/html" id="house_6">
+    <input type="checkbox" lay-filter="ckStateUser" value="{{d.xactive}}" lay-skin="switch" disabled
+           lay-text="已完成|未完成" {{d.xactive==1?'checked':''}}/>
+</script>
+
+<script>
+    layui.use(['layer', 'form', 'table', 'util', 'admin', 'tableX'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var util = layui.util;
+        var admin = layui.admin;
+        var tableX = layui.tableX;
+
+        // 渲染表格
+        var insTb = table.render({
+            elem: '#tableBook',
+            url: '/api/getRepairhouse',
+            page: true,
+            height: "full-100",
+            toolbar: true,
+            cellMinWidth: 100,
+            cols: [
+                [
+                    {type: 'numbers', title: '#'}
+                    ,{field: 'xid', sort: true,title: '维修单号'}
+                    ,{field: 'x_hID', sort: true, title: '房号'}
+                    ,{field: 'xactive', templet: '#house_6', sort: true, title: '维修状态'}
+                    ,{field: 'xcontent', sort: true, title: '维修说明'}
+                    ,{field: 'xtype', sort: true, title: '维修类型'}
+                    ,{field: 'xsponsor', templet: '#lease_4', sort: true, title: '发起人'}
+                    ,{field: 'xperson', templet: '#lease_3', sort: true, title: '负责人'}
+                    ,{field: 'xtime', sort: true, title: '发起时间'}
+                    ,{field: 'xcharge', templet: '#lease_7', sort: true, title: '收费'}
+                    ,{field: 'xfinish', sort: true, title: '结束时间'}
+                    ,{align: 'center', toolbar: '#tableBarBook', title: '操作', minWidth: 200}
+                ]
+            ]
+        });
+
+        // 添加
+        $('#btnAddBook').click(function () {
+            showEditModel();
+        });
+
+        // 搜索
+        form.on('submit(formSubSearchBook)', function (data) {
+            insTb.reload({where: data.field,url:'/api/findRepairhouse',page : {curr : 1}}, 'data');
+        });
+
+        // 工具条点击事件
+        table.on('tool(tableBook)', function (obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+            if (layEvent === 'edit') { // 修改
+                showEditModel(data);
+            } else{ // 删除
+                doDel(data.xid);
+            }
+        });
+
+        // 显示表单弹窗
+        function showEditModel(mBook) {
+            var option = "";
+            if(mBook==null){
+                admin.open({
+                    type: 1,
+                    title: '添加租约',
+                    content: $('#modelBook').html(),
+                    success: function (layero, dIndex) {
+                        //房号，房东号，租客号选择动态增加
+                        $.ajax({
+                            url: '/ajax/getAllOwns',
+                            dataType: 'json',
+                            type: 'get',
+                            async:false,
+                            success: function (res) {
+                                if (res.code == 0){
+                                    for(var i in res.data){
+                                        option += "<option value='"+res.data[i]['oid']+"'>"+res.data[i]['oname']+"</option>";
+                                    }
+                                }
+                                $("[name='xperson']").append(option);
+                                form.render()
+                            }
+                        })
+                        option = "";
+                        $.ajax({
+                            url: '/ajax/getAllhouses',
+                            dataType: 'json',
+                            type: 'get',
+                            async:false,
+                            success: function (res) {
+                                if (res.code == 0){
+                                    for(var i in res.data){
+                                        option += "<option value='"+res.data[i]['hid']+"'>"+res.data[i]['hid']+"</option>";
+                                    }
+                                }
+                                $("[name='x_hID']").append(option);
+                                form.render()
+                            }
+                        })
+                        option = "";
+                        $.ajax({
+                            url: '/ajax/getAllTenants',
+                            dataType: 'json',
+                            type: 'get',
+                            async:false,
+                            success: function (res) {
+                                if (res.code == 0){
+                                    for(var i in res.data){
+                                        option += "<option value='"+res.data[i]['tid']+"'>"+res.data[i]['tname']+"</option>";
+                                    }
+                                }
+                                $("[name='xsponsor']").append(option);
+                                form.render()
+                            }
+                        })
+                        option = "";
+                        //日期显示
+                        layui.use('laydate', function() {
+                            var laydate = layui.laydate;
+                            laydate.render({elem: '#xtime' ,type: 'datetime',format: 'yyyy-MM-dd HH:mm:ss'});
+                            laydate.render({elem: '#xfinish' ,type: 'datetime',format: 'yyyy-MM-dd HH:mm:ss'});
+                        });
+                        //下一张
+                        $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                        var url = 'api/addRepairhouse';
+                        // 回显数据
+                        form.val('modelBookForm', mBook);
+                        // 表单提交事件
+                        form.on('submit(modelSubmitBook)', function (data) {
+                            layer.load(2);
+                            $.ajax({
+                                url:url,
+                                type:"POST",
+                                data:JSON.stringify(data.field),
+                                contentType:"application/json; charset=utf-8",
+                                dataType:"json",
+                                success: function(res){
+                                    layer.closeAll('loading');
+                                    if (res.code == 200) {
+                                        layer.close(dIndex);
+                                        layer.msg(res.msg, {icon: 1});
+                                        insTb.reload({}, 'data');
+                                    } else {
+                                        layer.msg(res.msg, {icon: 2});
+                                    }
+                                }
+                            })
+                            return false;
+                        });
+                    }
+                });
+            }else{
+                var option = '';
+                admin.open({
+                    type: 1,
+                    title: '修改维修订单',
+                    content: $('#modelBook').html(),
+                    success: function (layero, dIndex) {
+                        //房号，房东号，租客号选择动态增加
+                        $.ajax({
+                            url: '/ajax/getAllOwns',
+                            dataType: 'json',
+                            type: 'get',
+                            async:false,
+                            success: function (res) {
+                                if (res.code == 0){
+                                    for(var i in res.data){
+                                        option += "<option value='"+res.data[i]['oid']+"'>"+res.data[i]['oname']+"</option>";
+                                    }
+                                }
+                                $("[name='xperson']").append(option);
+                                form.render()
+                            }
+                        })
+                        option = "";
+                        $.ajax({
+                            url: '/ajax/getAllhouses',
+                            dataType: 'json',
+                            type: 'get',
+                            async:false,
+                            success: function (res) {
+                                if (res.code == 0){
+                                    for(var i in res.data){
+                                        option += "<option value='"+res.data[i]['hid']+"'>"+res.data[i]['hid']+"</option>";
+                                    }
+                                }
+                                $("[name='x_hID']").append(option);
+                                form.render()
+                            }
+                        })
+                        option = "";
+                        $.ajax({
+                            url: '/ajax/getAllTenants',
+                            dataType: 'json',
+                            type: 'get',
+                            async:false,
+                            success: function (res) {
+                                if (res.code == 0){
+                                    for(var i in res.data){
+                                        option += "<option value='"+res.data[i]['tid']+"'>"+res.data[i]['tname']+"</option>";
+                                    }
+                                }
+                                $("[name='xsponsor']").append(option);
+                                form.render()
+                            }
+                        })
+                        option = "";
+                        //日期显示
+                        layui.use('laydate', function() {
+                            var laydate = layui.laydate;
+                            laydate.render({elem: '#xtime' ,type: 'datetime',format: 'yyyy-MM-dd HH:mm:ss'});
+                            laydate.render({elem: '#xfinish' ,type: 'datetime',format: 'yyyy-MM-dd HH:mm:ss'});
+                        });
+                        $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                        var url = '/api/updateRepairhouse';
+                        //mBook && (mBook.roleId = mUser.roles[0].roleId);
+                        // 回显数据
+                        form.val('modelBookForm', mBook);
+                        // 表单提交事件
+                        form.on('submit(modelSubmitBook)', function (data) {
+                            layer.load(2);
+                            $.ajax({
+                                url:url,
+                                type:"POST",
+                                data:JSON.stringify(data.field),
+                                contentType:"application/json; charset=utf-8",
+                                dataType:"json",
+                                success: function(res){
+                                    layer.closeAll('loading');
+                                    if (res.code == 200) {
+                                        layer.close(dIndex);
+                                        layer.msg(res.msg, {icon: 1});
+                                        insTb.reload({}, 'data');
+                                    } else {
+                                        layer.msg(res.msg, {icon: 2});
+                                    }
+                                }
+                            })
+                            return false;
+                        });
+                    }
+                });
+            }
+
+        }
+
+        // 删除
+        function doDel(id) {
+            layer.confirm('确定要删除“' + id + '”吗？', {
+                skin: 'layui-layer-admin',
+                shade: .1
+            }, function (i) {
+                layer.close(i);
+                layer.load(2);
+                $.get('/api/delRepairhouse', {
+                    xID: id
+                }, function (res) {
+                    layer.closeAll('loading');
+                    if (res.code == 200) {
+                        layer.msg(res.msg, {icon: 1});
+                        insTb.reload({}, 'data');
+                    } else {
+                        layer.msg(res.msg, {icon: 2});
+                    }
+                }, 'json');
+            });
+        }
+
+
+    });
+</script>
+
+</body>
+</html>
